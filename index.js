@@ -5,7 +5,7 @@ const exphbs = require('express-handlebars');
 const bodyparser = require('body-parser');
 const connectToMongo = require('./models/db');
 const courseController = require('./controller/course_controller')
-const uploadCourses = require('./firebase');
+// const uploadCourses = require('./firebase');
 
 var app = express();
 
