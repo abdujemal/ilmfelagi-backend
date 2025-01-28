@@ -1,5 +1,5 @@
 import express from 'express';
-import courseModel from '../models/course.model';
+import courseModel from '../models/course.model.js';
 var router = express.Router();
 
 router.get('/', async (req,res)=>{

@@ -3,7 +3,7 @@ import express from 'express';
 import path from 'path';
 // const exphbs = require('express-handlebars');
 import bodyparser from 'body-parser';
-import courseController from './controller/course_controller';
+import courseController from './controller/course_controller.js';
 // import {formatJson, saveJson, uploadAllCourses, uploadFromJson, uploadLatestCourses} from './firebase.js';
 import {connectToMongo} from './models/db.js'
 import CourseModel from './models/course.model.js';
