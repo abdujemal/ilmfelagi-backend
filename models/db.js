@@ -1,19 +1,21 @@
-const mongoose = require('mongoose');
-const mongoURI = 'mongodb+srv://abdu1994jemal:11Tah1994@ilmfelagi.56u9rki.mongodb.net/ilmfelagiDB?retryWrites=true&w=majority&appName=ilmfelagi'
+import mongoose from 'mongoose';
+const mongoURI = process.env.mongoURI
 
-const connectToMongo = async () => {
+export const connectToMongo = async () => {
   
-try {
-    mongoose.set('strictQuery', false);
-    mongoose.connect(mongoURI);
-    
-   
+    try {
+        // mongoose.set('strictQuery', false);
+        await mongoose.connect(mongoURI, {
+           
+            socketTimeoutMS: 30000, // 30 seconds timeout for queries
+            serverSelectionTimeoutMS: 30000, // 30 seconds timeout for server selection
+        });
+        
+        console.log('Mongo connected')
+    }
+    catch(error) {
+        console.log(error)
+        process.exit()
+    }
+}
 
-    console.log('Mongo connected')
-}
-catch(error) {
-    console.log(error)
-    process.exit()
-}
-}
-module.exports = connectToMongo;

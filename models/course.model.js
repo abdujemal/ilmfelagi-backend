@@ -1,4 +1,4 @@
-const mongoose = require('mongoose')
+import mongoose from "mongoose";
 
 const courseModel = mongoose.Schema({
     courseId: {
@@ -38,8 +38,19 @@ const courseModel = mongoose.Schema({
         type: Number
     },
     dateTime: {
-        type: String
+        type: String,
+        index: true,
     },
+    isDeleted: {
+        type: Boolean,
+        default: false,
+    },
+    isBeginner: {
+        type: Boolean,
+        default: false,
+    }
 }, { collection: 'Courses' })
 
-module.exports = mongoose.model("Courses", courseModel);
+const CourseModel = mongoose.model("Courses", courseModel);
+
+export default CourseModel

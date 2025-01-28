@@ -1,11 +1,12 @@
 
-const express = require('express');
-const path = require('path');
-const exphbs = require('express-handlebars');
-const bodyparser = require('body-parser');
-const connectToMongo = require('./models/db');
-const courseController = require('./controller/course_controller')
-// const uploadCourses = require('./firebase');
+import express from 'express';
+import path from 'path';
+// const exphbs = require('express-handlebars');
+import bodyparser from 'body-parser';
+// import courseController from './controller/course_controller';
+import {formatJson, saveJson, uploadAllCourses, uploadFromJson, uploadLatestCourses} from './firebase.js';
+import {connectToMongo} from './models/db.js'
+import CourseModel from './models/course.model.js';
 
 var app = express();
 
@@ -23,7 +24,15 @@ app.listen(3000, () => {
     console.log('Express server started at port : 3000');
     
     connectToMongo().then(()=>{
-        // uploadCourses()
+        console.log("Connected to MongoDB");
+        // saveJson()
+        // CourseModel.find().limit(300).then((courses)=>{
+
+        //     console.log("Courses without 'dateTime':", courses);
+        // })
+
+        // formatJson()
+        // uploadLatestCourses()
     })
 });
 

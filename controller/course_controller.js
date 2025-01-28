@@ -1,13 +1,12 @@
-const express = require('express');
-const courseModel = require('../models/course.model');
+import express from 'express';
+import courseModel from '../models/course.model';
 var router = express.Router();
 
-router.get('/:dateTime', async (req,res)=>{
+router.get('/', async (req,res)=>{
 
-    const courses = await courseModel.find({ dateTime: { $gt: req.params.dateTime } });
+    const courses = await courseModel.find({ dateTime: { $gt: req.query.dateTime } });
 
     res.status(201).json(courses);
 });
 
-
-module.exports = router;
+export default router;
