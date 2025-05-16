@@ -13,6 +13,19 @@ export const getLatestCourses =  async(req,res)=>{
         res.status(500).json({ msg: e.message });
     }
 };
+export const getNamesOfCourses =  async(req,res)=>{
+    try{
+
+        const courses = await CourseModel.find({}, // Filter (empty = get all documents)
+        {
+            projection: { name: 1, ustaz: 1 } // Include only name, ustaz, and _id
+        },);
+    
+        res.status(201).json(courses);
+    } catch (e) {
+        res.status(500).json({ msg: e.message });
+    }
+};
 export const getCourseById = async (req, res) => {
     try {
         const course = await CourseModel.findById(req.params.id);
