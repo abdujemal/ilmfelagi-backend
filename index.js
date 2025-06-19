@@ -4,7 +4,7 @@ import path from 'path';
 // const exphbs = require('express-handlebars');
 import bodyparser from 'body-parser';
 import routes from './controller/routes.js';
-// import {formatJson, saveJson, uploadAllCourses, uploadFromJson, uploadLatestCourses} from './firebase.js';
+import { uploadCourseThatDoesnotExist, checkCoursesAndUpdate } from './firebase.js';
 import {connectToMongo} from './models/db.js'
 import CourseModel from './models/course.model.js';
 
@@ -22,9 +22,10 @@ app.use('/api/courses', routes);
 app.listen(3000, () => {
 
     console.log('Express server started at port : 3000');
-    
     connectToMongo().then(()=>{
         console.log("Connected to MongoDB");
+        checkCoursesAndUpdate()
+        // uploadCourseThatDoesnotExist();
         // saveJson()
         // CourseModel.find().limit(300).then((courses)=>{
 

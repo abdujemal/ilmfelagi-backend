@@ -8,7 +8,7 @@ export const connectToMongo = async () => {
         // mongoose.set('strictQuery', false);
         await mongoose.connect(mongoURI, {
            
-            socketTimeoutMS: 30000, // 30 seconds timeout for queries
+            socketTimeoutMS: 40000, // 30 seconds timeout for queries
             serverSelectionTimeoutMS: 30000, // 30 seconds timeout for server selection
         });
         
