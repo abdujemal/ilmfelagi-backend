@@ -10,6 +10,8 @@ import CourseModel from './models/course.model.js';
 
 var app = express();
 
+const port = process.env.PORT || 3000;
+
 app.use(bodyparser.urlencoded({
     extended: true
 }));
@@ -19,7 +21,7 @@ app.use(bodyparser.json());
 // app.set('view engine', 'hbs');
 app.use('/api/courses', routes);
 
-app.listen(3000, () => {
+app.listen(port, () => {
 
     console.log('Express server started at port : 3000');
     connectToMongo().then(()=>{

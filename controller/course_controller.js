@@ -1,7 +1,20 @@
-import express from 'express';
 import CourseModel from '../models/course.model.js';
 
-const router = express.Router();
+export const getCourses = async (req, res) => {
+    try {
+        const { page = 1, limit = 20 } = req.query;
+        const skip = (page - 1) * limit;
+
+        const courses = await CourseModel.find({ isDeleted: false })
+            .skip(skip)
+            .limit(Number(limit))
+            .sort({ dateTime: -1 }) // Sort by dateTime in descending order
+            .select('-__v'); // Exclude the __v field
+        res.status(200).json(courses);
+    } catch (e) {
+        res.status(500).json({ msg: e.message });
+    }
+};
 
 export const getLatestCourses =  async(req,res)=>{
     try{
