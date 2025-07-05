@@ -27,6 +27,39 @@ export const getCourses = async (req, res) => {
     }
 };
 
+export const searchCourses = async (req, res) => {
+    if(!req.query.q){
+        res.status(400).json({msg: "no date found"})
+    }
+    const { page = 1, limit = 20 } = req.query;
+    const skip = (page - 1) * limit;
+
+    try {
+        const courses = await CourseModel.find({
+            title: { $regex: req.query.q, $options: 'i' }
+        }).skip(skip)
+        .limit(Number(limit))
+        .sort({ dateTime: -1 }) // Sort by dateTime in descending order
+        .select('-__v');
+
+        // Get total count
+        const total = await CourseModel.countDocuments({
+            title: { $regex: req.query.q, $options: 'i' }
+        });
+        const totalPages = Math.ceil(total / limit);    
+
+        res.status(200).json({
+            courses,
+            total,
+            limit,
+            page,
+            totalPages,
+        });
+    } catch (e) {
+        res.status(500).json({err: e.message});
+    }
+};
+
 export const getCourseByCategory = async (req, res) => {
     try {
         const { page = 1, limit = 20 } = req.query;
@@ -179,21 +212,6 @@ export const deleteCourse = async (req, res) => {
         res.status(201).json({msg: "Successfully Deleted"}); 
     } catch (e) {
         res.status(500).json({msg: e.message});
-    }
-};
-
-export const searchCourses = async (req, res) => {
-    if(!req.query.q){
-        res.status(400).json({msg: "no date found"})
-    }
-
-    try {
-        const courses = await CourseModel.find({
-            title: { $regex: req.query.q, $options: 'i' }
-        });
-        res.status(200).json(courses);
-    } catch (e) {
-        res.status(500).json({err: e.message});
     }
 };
 
