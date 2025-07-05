@@ -5,9 +5,10 @@ import path from 'path';
 import bodyparser from 'body-parser';
 import courseRoutes from './Routes/course_routes.js';
 import categoryRoutes from "./Routes/category_routes.js";
-import { uploadCourseThatDoesnotExist, checkCoursesAndUpdate } from './firebase.js';
+import ustazRoutes  from "./Routes/ustaz_routes.js";
+import faqRouter from "./Routes/faq_routes.js";
+// import { uploadCourseThatDoesnotExist, checkCoursesAndUpdate } from './firebase.js';
 import {connectToMongo} from './models/db.js'
-import CourseModel from './models/course.model.js';
 import cors from 'cors';
 
 var app = express();
@@ -28,6 +29,8 @@ app.use(bodyparser.json());
 // app.set('view engine', 'hbs');
 app.use('/api/v1/courses', courseRoutes);
 app.use("/api/v1/categories", categoryRoutes);
+app.use("/api/v1/ustazs", ustazRoutes)
+app.use("/api/v1/faq", faqRouter)
 
 app.listen(port, () => {
 

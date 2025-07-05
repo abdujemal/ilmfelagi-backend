@@ -55,6 +55,62 @@ export const getCourseByCategory = async (req, res) => {
     }
 };
 
+export const getCourseByUstaz = async (req, res) => {
+    try {
+        const { page = 1, limit = 20 } = req.query;
+        const skip = (page - 1) * limit;
+
+        const { ustaz } = req.params;
+        const courses = await CourseModel.find({ustaz})
+                .skip(skip)
+                .limit(Number(limit))
+                .sort({ dateTime: -1 }) // Sort by dateTime in descending order
+                .select('-__v');
+       
+        // Get total count
+        const total = await CourseModel.countDocuments({ustaz});
+        const totalPages = Math.ceil(total / limit);    
+
+        res.status(200).json({
+            courses,
+            total,
+            limit,
+            page,
+            totalPages,
+        });
+    } catch (e) {
+        res.status(500).json({ msg: e.message });
+    }
+};
+
+export const getCourseByTitle = async (req, res) => {
+    try {
+        const { page = 1, limit = 20 } = req.query;
+        const skip = (page - 1) * limit;
+
+        const { title } = req.params;
+        const courses = await CourseModel.find({title})
+                .skip(skip)
+                .limit(Number(limit))
+                .sort({ dateTime: -1 }) // Sort by dateTime in descending order
+                .select('-__v');
+       
+        // Get total count
+        const total = await CourseModel.countDocuments({title});
+        const totalPages = Math.ceil(total / limit);    
+
+        res.status(200).json({
+            courses,
+            total,
+            limit,
+            page,
+            totalPages,
+        });
+    } catch (e) {
+        res.status(500).json({ msg: e.message });
+    }
+};
+
 export const getLatestCourses =  async(req,res)=>{
     try{
 
