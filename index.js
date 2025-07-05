@@ -16,14 +16,17 @@ var app = express();
 const port = process.env.PORT || 3000;
 
 app.use(cors({
-  origin: 'http://localhost:5173',
+  origin: ['http://localhost:5173', 'https://ilmfelagi.com'],
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   credentials: true // if you're using cookies or auth headers
 }));
 
-app.use(bodyparser.urlencoded({
-    extended: true
-}));
-app.use(bodyparser.json());
+app.options('*', cors());
+
+// app.use(bodyparser.urlencoded({
+//     extended: true
+// }));
+app.use(express.json());
 // app.set('views', path.join(__dirname, '/views/'));
 // app.engine('hbs', exphbs({ extname: 'hbs', defaultLayout: 'mainLayout', layoutsDir: __dirname + '/views/layouts/' }));
 // app.set('view engine', 'hbs');
