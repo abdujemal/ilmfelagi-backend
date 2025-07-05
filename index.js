@@ -15,10 +15,22 @@ var app = express();
 
 const port = process.env.PORT || 3000;
 
+const allowedOrigins = [
+  'http://localhost:5173',
+  'https://ilm-felagi.netlify.app',
+  'https://ilmfelagi.com',
+];
+
 app.use(cors({
-  origin: "https://ilm-felagi.netlify.app",
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  credentials: true // if you're using cookies or auth headers
+  origin: (origin, callback) => {
+    // Allow requests with no origin (like mobile apps or curl)
+    if (!origin) return callback(null, true);
+    if (allowedOrigins.includes(origin)) {
+      return callback(null, true);
+    }
+    return callback(new Error('Not allowed by CORS'));
+  },
+  credentials: true,
 }));
 
 app.options('*', cors());
