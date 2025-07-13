@@ -10,6 +10,7 @@ import faqRouter from "./Routes/faq_routes.js";
 // import { uploadCourseThatDoesnotExist, checkCoursesAndUpdate } from './firebase.js';
 import {connectToMongo} from './models/db.js'
 import cors from 'cors';
+import { getLatestCourses } from './controller/course_controller.js';
 
 var app = express();
 
@@ -43,6 +44,7 @@ app.use(express.json());
 // app.engine('hbs', exphbs({ extname: 'hbs', defaultLayout: 'mainLayout', layoutsDir: __dirname + '/views/layouts/' }));
 // app.set('view engine', 'hbs');
 app.use('/api/v1/courses', courseRoutes);
+app.use('/api/courses', getLatestCourses);
 app.use("/api/v1/categories", categoryRoutes);
 app.use("/api/v1/ustazs", ustazRoutes)
 app.use("/api/v1/faq", faqRouter)
@@ -64,5 +66,4 @@ app.listen(port, () => {
         // uploadLatestCourses()
     })
 });
-
 
