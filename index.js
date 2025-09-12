@@ -11,6 +11,10 @@ import faqRouter from "./Routes/faq_routes.js";
 import {connectToMongo} from './models/db.js'
 import cors from 'cors';
 import { getLatestCourses } from './controller/course_controller.js';
+import { uploadAllCourses } from './firebase.js';
+import CourseModel from './models/course.model.js';
+import { convertToMp3AndReplace, initB2, updateAudioOfCourses } from './utils.js';
+import fs from "fs";
 
 var app = express();
 
@@ -49,19 +53,62 @@ app.use("/api/v1/categories", categoryRoutes);
 app.use("/api/v1/ustazs", ustazRoutes)
 app.use("/api/v1/faq", faqRouter)
 
+app.get('/api/course/:id', async (req, res) => {
+  const [course] = await CourseModel.find({courseId: req.params.id}); // Get course info from API
+  res.send(`
+    <html>
+      <head>
+        <meta property="og:title" content="${course.title}" />
+        <meta property="og:description" content="${course.ustaz}" />
+        <meta property="og:image" content="${course.image}" />
+        <meta property="og:url" content="https://www.ilmfelagi.com/course/${course.id}" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <!-- ... -->
+      </head>
+      <body>
+        <script>
+          window.location.href = "ilmfelagi://details/${course.courseId}";
+          const fallback = "https://ilmfelagi.com/details/${course.courseId}";
+          
+          setTimeout(() => {
+            window.location.href = fallback;
+          }, 1000);
+        </script>
+      </body>
+    </html>
+  `);
+});
+
 app.listen(port, () => {
 
     console.log(`Express server started at port : ${port}`);
     connectToMongo().then(()=>{
-        console.log("Connected to MongoDB");
+      // uploadAllCourses()
+        // updateAudioOfCourses()
+        // console.log("Connected to MongoDB");
+        // initB2().then(()=>{
+        //   console.log("B2 Initialized");
+        //   convertToMp3AndReplace("https://b2.ilmfelagi.com/file/ilm-Felagi2/00testest/%D9%85%D8%B3%D9%84%D9%85_%D9%83%D8%AA%D8%A7%D8%A8_%D8%A7%D9%84%D8%A5%D9%8A%D9%85%D8%A7%D9%86_%D9%A1%D9%A3A.amr")
+        // })        
+        // uploadAllCourses()
         // checkCoursesAndUpdate()
         // uploadCourseThatDoesnotExist();
         // saveJson()
-        // CourseModel.find().limit(300).then((courses)=>{
+        // CourseModel.find({}).then((courses)=>{
+          // let courses = JSON.parse(fs.readFileSync("names.json", "utf-8"));
 
-        //     console.log("Courses without 'dateTime':", courses);
-        // })
-
+          //   console.log("Courses without 'dateTime':", courses.length);
+            // let names = []
+            // for(const course of courses){
+            //   if(names.find(n => n.title === course.title && n.category === course.category)){
+            //     continue
+            //   }
+            //   names.push({title: course.title, category: course.category})
+            // }
+            // fs.writeFileSync("names.json", JSON.stringify(names, null, 2));
+          // })
+        // let names = JSON.parse(fs.readFileSync("names.json", "utf-8"));
+        // names.sort()
         // formatJson()
         // uploadLatestCourses()
     })

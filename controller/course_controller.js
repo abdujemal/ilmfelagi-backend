@@ -88,6 +88,25 @@ export const getCourseByCategory = async (req, res) => {
     }
 };
 
+export const getCourseByNumber = async (req, res) => {
+    try {
+        const { n } = req.params; // Get the nth item from the request parameters
+       const course = await CourseModel
+            .find()
+            .sort({ dateTime: 1 })   // or sort by `createdAt`, `dateTime`, or title
+            .skip(Number(n) - 1)         // skip n-1 to get the nth item
+            .limit(1)            // only one result
+            .lean();   
+        
+        if (!course || course.length === 0) {
+            return res.status(404).json({ msg: "Course not found" });
+        }
+        res.status(200).json(course[0]); // Return the first item in the array
+    } catch (e) {
+        res.status(500).json({ msg: e.message });
+    }
+};
+
 export const getCourseByUstaz = async (req, res) => {
     try {
         const { page = 1, limit = 20 } = req.query;
@@ -143,6 +162,7 @@ export const getCourseByTitle = async (req, res) => {
         res.status(500).json({ msg: e.message });
     }
 };
+
 
 export const getLatestCourses =  async(req,res)=>{
     try{

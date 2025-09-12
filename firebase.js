@@ -1,7 +1,9 @@
 import { app } from "./firebase-config.js"
 import CourseModel from "./models/course.model.js";
+import UstazModel from "./models/ustaz.model.js";
+import CategoryModel from "./models/category.model.js";
 import fs from "fs";
-import { getFirestore, collection, getDocs, query, where, orderBy, getCountFromServer } from "firebase/firestore";
+import { getFirestore, collection, getDocs, query, where, orderBy, getCountFromServer, limitToLast, limit } from "firebase/firestore";
 
 const db = getFirestore(app)
 
@@ -223,11 +225,16 @@ export const formatJson = async ()=>{
 }
 
 export const uploadAllCourses = async ()=>{
+    let ustazs = []
+    let categories = []
     
-    // const singleCourse = await CourseModel.find().sort({dateTime: -1}).limit(1);
-    // console.log({singleCourse});
-    
-    const courses = await getDocs(query(collection(db, "Courses"), orderBy("dateTime", 'desc')))
+    const courses = await getDocs(
+        query(
+            collection(db, "Courses"), 
+            orderBy("dateTime", 'desc'),
+            limit(23)
+        )
+    )
     console.log("docs", courses.docs.length)
 
     const data = [];
@@ -237,45 +244,38 @@ export const uploadAllCourses = async ()=>{
     const fileName = `data.json`;
     fs.writeFileSync(fileName, JSON.stringify(data, null, 2)); // Save with 2-space indentation
 
-    courses.docs.forEach(e => {
+    courses.docs.forEach(async e => {
         try {
-            console.log(e.data().title);
+            console.log(e.data().title, e.data().ustaz);
+
+            // if(!ustazs.includes(e.data().ustaz)){
+            //     ustazs.push(e.data().ustaz)
+            //     const newUstaz = new UstazModel(
+            //         {name: e.data().ustaz}
+            //     );
+                
+            //     await newUstaz.save();
+            // }
+
+            // if(!categories.includes(e.data().category)){
+            //     categories.push(e.data().category)
+            //      const newCategory = new CategoryModel(
+            //         {name: e.data().category}
+            //     );
+                
+            //     await newCategory.save();
+            // }
             
-            // Create a new course instance
             const newCourse = new CourseModel(
                 e.data()
-                // {
-                //     courseId: "C001",
-                //     author: "John Doe",
-                //     category: "Technology",
-                //     courseIds: "T001",
-                //     noOfRecord: 12,
-                //     pdfId: "PDF123",
-                //     title: "Introduction to AI",
-                //     ustaz: "Jane Smith",
-                //     image: "https://example.com/course-image.jpg",
-                //     totalDuration: 120,
-                //     audioSizes: "50MB",
-                //     isCompleted: 0,
-                //     dateTime: new Date().toISOString(),
-                //     isDeleted: false,
-                //     isBeginner: true,
-                // }
             );
-    
-            // Save the document to the database
             
-            newCourse.save().then((d)=>{
+            await newCourse.save().then((d)=>{
                 console.log(newCourse.title, "is uploaded.");
             })
-           
-            
-            
         } catch (error) {
             console.error("Error uploading course: ", error);
         }
     });
     console.log("len", courses.docs.length);
-    
-   
 }
